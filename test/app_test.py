@@ -6,6 +6,7 @@ from api.results_filtering import process_search
 
 load_dotenv()
 
+
 def test_edamam_id_and_key_are_valid():
     edamam_api = (
         "https://api.edamam.com/api/recipes/v2?type=public&app_id="
@@ -20,7 +21,13 @@ def test_edamam_id_and_key_are_valid():
 
 
 def test_process_search_return_correct_boolean_list_1():
-    test_args = {"dishname": "", "diet": ["high-protein", "low-carb"], "health": ["dairy-free", "gluten-free"], "cuisine": ["asian", "british"], "dish": ["main course"]}
+    test_args = {
+        "dishname": "",
+        "diet": ["high-protein", "low-carb"],
+        "health": ["dairy-free", "gluten-free"],
+        "cuisine": ["asian", "british"],
+        "dish": ["main course"],
+    }
 
     # recipes = json.load(open("test/recipe_test.json"))
     recipes = json.load(open("test/recipe_test.json"))
@@ -29,23 +36,18 @@ def test_process_search_return_correct_boolean_list_1():
     for recipe in recipes["hits"]:
         results.append(process_search(test_args, recipe))
 
-    assert results == [False, False, False]
-
-
-def test_process_search_return_correct_boolean_list_1():
-    test_args = {"dishname": "", "diet": ["High-Protein", "Low-Carb"], "health": ["Dairy-Free", "Gluten-Free"], "cuisine": ["asian", "british"], "dish": ["main course"]}
-
-    recipes = json.load(open("test/recipe_test.json"))
-
-    results = []
-    for recipe in recipes["hits"]:
-        results.append(process_search(test_args, recipe))
-
+    # None of the recipe have all the test_args
     assert results == [False, False, False]
 
 
 def test_process_search_return_correct_boolean_list_2():
-    test_args = {"dishname": "", "diet": ["Low-Carb"], "health": ["Gluten-Free"], "cuisine": [], "dish": []}
+    test_args = {
+        "dishname": "",
+        "diet": ["Low-Carb"],
+        "health": ["Gluten-Free"],
+        "cuisine": [],
+        "dish": [],
+    }
 
     recipes = json.load(open("test/recipe_test.json"))
 
@@ -58,7 +60,13 @@ def test_process_search_return_correct_boolean_list_2():
 
 
 def test_process_search_return_correct_boolean_list_3():
-    test_args = {"dishname": "", "diet": [], "health": [], "cuisine": ["asian"], "dish": ["main course"]}
+    test_args = {
+        "dishname": "",
+        "diet": [],
+        "health": [],
+        "cuisine": ["asian"],
+        "dish": ["main course"],
+    }
 
     recipes = json.load(open("test/recipe_test.json"))
 
