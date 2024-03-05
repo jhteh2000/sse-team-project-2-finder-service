@@ -55,7 +55,7 @@ def index():
                 result_args["recipeURL"].append(recipe["recipe"]["url"])
                 result_args["count"] += 1
     else:
-        return jsonify({"error": "API Service Unavailable", "status code": 503})
+        return jsonify({"error": "API Service Unavailable"}), 503
 
     # Favorite list check, if user has logged in, and the dish is already in list, heart remains red
     # favorites = []
