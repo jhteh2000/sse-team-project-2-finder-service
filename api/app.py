@@ -39,17 +39,6 @@ def index():
     if response.status_code == 200:
         data = response.json()
 
-        result_args = {
-            "count": 0,
-            "uri": [],
-            "image": [],
-            "name": [],
-            "calories": [],
-            "protein": [],
-            "ingredient": [],
-            "recipeURL": [],
-        }
-
         result_list = []
         for recipe in data["hits"]:
             if process_search(args_dict, recipe):
