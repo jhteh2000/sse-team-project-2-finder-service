@@ -33,26 +33,18 @@ def index():
             "recipeURL": [],
         }
 
+        result_list = []
         for recipe in data["hits"]:
             if process_search(args_dict, recipe):
-                result_args["uri"].append(recipe["recipe"]["uri"])
-                result_args["image"].append(recipe["recipe"]["image"])
-                result_args["name"].append(recipe["recipe"]["label"])
-                result_args["calories"].append(
-                    round(
-                        recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"],
-                        ndigits=3,
-                    )
-                )
-                result_args["protein"].append(
-                    round(
-                        recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"],
-                        ndigits=3,
-                    )
-                )
-                result_args["ingredient"].append(recipe["recipe"]["ingredientLines"])
-                result_args["recipeURL"].append(recipe["recipe"]["url"])
-                result_args["count"] += 1
+                result_args = {}
+                result_args["uri"] = recipe["recipe"]["uri"]
+                result_args["image"]= recipe["recipe"]["image"]
+                result_args["name"] = recipe["recipe"]["label"]
+                result_args["calories"] = round(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"], ndigits=3)
+                result_args["protein"] = round(recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3)
+                result_args["ingredient"] = recipe["recipe"]["ingredientLines"]
+                result_args["recipeURL"] = recipe["recipe"]["url"]
+                result_list.append(result_args)
     else:
         return jsonify({"error": "API Service Unavailable"}), 503
 
@@ -62,7 +54,7 @@ def index():
     #     for dish in return_data("Favorites", current_user.email):
     #         favorites.append(dish["dish_uri"])
 
-    return jsonify(result_args)
+    return jsonify(result_list)
 
 @app.route("/favourites", methods=["POST"])
 def favourites():
