@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import json
-from api.results_filtering import process_search
+from functions.results_filtering import process_search
 
 load_dotenv()
 

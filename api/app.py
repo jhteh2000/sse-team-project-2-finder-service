@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-import requests
-import json
-from results_filtering import get_response_recipe, process_search
+from functions.results_filtering import get_response_recipe, process_search, get_response_uri
+from functions.database_functions import fetch_user_favorites
 
 load_dotenv()
 
@@ -64,3 +63,27 @@ def index():
     #         favorites.append(dish["dish_uri"])
 
     return jsonify(result_args)
+
+@app.route("/favourites", methods=["POST"])
+def favourites():
+    user_email = request.form["user"]
+    favorites_uri = fetch_user_favorites(user_email)
+
+    response = get_response_uri(favorites_uri)
+    if response.status_code == 200:
+        data = response.json()
+
+        favorites_list = []
+        for recipe in data["hits"]:
+            favorites = {}
+            favorites["uri"] = recipe["recipe"]["uri"]
+            favorites["image"] = recipe["recipe"]["image"]
+            favorites["name"] = recipe["recipe"]["label"]
+            favorites["calories"] = round(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"], ndigits=3)
+            favorites["protein"] = round(recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3)
+            favorites["ingredient"] = recipe["recipe"]["ingredientLines"]
+            favorites["recipeURL"] = recipe["recipe"]["url"]
+            favorites_list.append(favorites)
+    
+        return jsonify(favorites_list)
+    return jsonify({"error": "API Service Unavailable"}), 503
