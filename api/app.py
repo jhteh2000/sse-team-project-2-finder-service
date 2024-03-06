@@ -49,17 +49,20 @@ def index():
         return jsonify({"error": "API Service Unavailable"}), 503
 
     # Favorite list check, if user has logged in, and the dish is already in list, heart remains red
-    # favorites = []
-    # if current_user.is_authenticated is True:
-    #     for dish in return_data("Favorites", current_user.email):
-    #         favorites.append(dish["dish_uri"])
+    favorites_uri = []
+    if args_dict["user"]:
+        favorites_uri = fetch_user_favorites(args_dict["user"])
 
-    return jsonify(result_list)
+    return jsonify([result_list, favorites_uri])
 
 @app.route("/favourites", methods=["POST"])
 def favourites():
     user_email = request.form["user"]
     favorites_uri = fetch_user_favorites(user_email)
+
+    # Return a blank JSON if user does not have favorites
+    if not favorites_uri:
+        return jsonify([])
 
     response = get_response_uri(favorites_uri)
     if response.status_code == 200:
