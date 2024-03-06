@@ -34,7 +34,17 @@ def index():
     # with open(join("../samplejson", "recipe.json"), "r") as read_file:
     #     data = json.load(read_file)
 
+    # Use cached data if the same query is made recently
+    try:
+        cached_data = cache.get(str(args_dict))
+        if cached_data:
+            print("Using cached data")
+            return jsonify(cached_data)
+    except:
+        print("Redis server is not available")
+
     # For Production
+    print("Requesting data from Edamam")
     response = get_response_recipe(args_dict)
     if response.status_code == 200:
         data = response.json()
@@ -63,6 +73,11 @@ def index():
     favorites_uri = []
     if args_dict["user"]:
         favorites_uri = fetch_user_favorites(args_dict["user"])
+
+    try:
+        cache.set(str(args_dict), [result_list, favorites_uri])
+    except:
+        print("Redis server is not available")
 
     return jsonify([result_list, favorites_uri])
 
