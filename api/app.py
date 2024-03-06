@@ -1,11 +1,28 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from functions.results_filtering import get_response_recipe, process_search, get_response_uri
+from functions.results_filtering import (
+    get_response_recipe,
+    process_search,
+    get_response_uri,
+)
 from functions.database_functions import fetch_user_favorites
+from redis import Redis
+from flask_caching import Cache
 
 load_dotenv()
 
+config = {
+    "CACHE_TYPE": "RedisCache",
+    "CACHE_DEFAULT_TIMEOUT": 3600,
+    "CACHE_REDIS_HOST": "redis",
+    "CACHE_REDIS_PORT": 6379,
+}
+
+# Initialising Flask app and Redis for caching
 app = Flask(__name__)
+redis = Redis(host="redis", port=6379)
+app.config.from_mapping(config)
+cache = Cache(app)
 
 
 @app.route("/", methods=["POST"])
@@ -38,10 +55,15 @@ def index():
             if process_search(args_dict, recipe):
                 result_args = {}
                 result_args["uri"] = recipe["recipe"]["uri"]
-                result_args["image"]= recipe["recipe"]["image"]
+                result_args["image"] = recipe["recipe"]["image"]
                 result_args["name"] = recipe["recipe"]["label"]
-                result_args["calories"] = round(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"], ndigits=3)
-                result_args["protein"] = round(recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3)
+                result_args["calories"] = round(
+                    recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"],
+                    ndigits=3,
+                )
+                result_args["protein"] = round(
+                    recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3
+                )
                 result_args["ingredient"] = recipe["recipe"]["ingredientLines"]
                 result_args["recipeURL"] = recipe["recipe"]["url"]
                 result_list.append(result_args)
@@ -54,6 +76,7 @@ def index():
         favorites_uri = fetch_user_favorites(args_dict["user"])
 
     return jsonify([result_list, favorites_uri])
+
 
 @app.route("/favourites", methods=["POST"])
 def favourites():
@@ -74,11 +97,15 @@ def favourites():
             favorites["uri"] = recipe["recipe"]["uri"]
             favorites["image"] = recipe["recipe"]["image"]
             favorites["name"] = recipe["recipe"]["label"]
-            favorites["calories"] = round(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"], ndigits=3)
-            favorites["protein"] = round(recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3)
+            favorites["calories"] = round(
+                recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"], ndigits=3
+            )
+            favorites["protein"] = round(
+                recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3
+            )
             favorites["ingredient"] = recipe["recipe"]["ingredientLines"]
             favorites["recipeURL"] = recipe["recipe"]["url"]
             favorites_list.append(favorites)
-    
+
         return jsonify(favorites_list)
     return jsonify({"error": "API Service Unavailable"}), 503
