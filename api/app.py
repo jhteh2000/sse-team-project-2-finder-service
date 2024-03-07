@@ -109,12 +109,13 @@ def favourites():
         return jsonify(favorites_list)
     return jsonify({"error": "API Service Unavailable"}), 503
 
+
 @app.route("/display-votes", methods=["POST"])
 def display_votes():
     try:
         dish_uri_list = request.get_json()
         print(dish_uri_list["dish_uri_list"])
-        
+
         response = get_response_uri(dish_uri_list["dish_uri_list"])
         if response.status_code == 200:
             data = response.json()
@@ -125,15 +126,20 @@ def display_votes():
                 favorites["uri"] = recipe["recipe"]["uri"]
                 favorites["image"] = recipe["recipe"]["image"]
                 favorites["name"] = recipe["recipe"]["label"]
-                favorites["calories"] = round(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"], ndigits=3)
-                favorites["protein"] = round(recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3)
+                favorites["calories"] = round(
+                    recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]["quantity"],
+                    ndigits=3,
+                )
+                favorites["protein"] = round(
+                    recipe["recipe"]["totalNutrients"]["PROCNT"]["quantity"], ndigits=3
+                )
                 favorites["ingredient"] = recipe["recipe"]["ingredientLines"]
                 favorites["recipeURL"] = recipe["recipe"]["url"]
                 dish_list.append(favorites)
-    
-            return jsonify(dish_list)      
-        
+
+            return jsonify(dish_list)
+
         return jsonify({"error": "API Service Unavailable"}), 503
-    
+
     except Exception as e:
         return jsonify(error=str(e)), 500
