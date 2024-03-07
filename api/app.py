@@ -13,7 +13,7 @@ load_dotenv()
 
 config = {
     "CACHE_TYPE": "RedisCache",
-    "CACHE_DEFAULT_TIMEOUT": 3600,
+    "CACHE_DEFAULT_TIMEOUT": 1800,
     "CACHE_REDIS_HOST": "localhost",
     "CACHE_REDIS_PORT": 6379,
 }
@@ -27,12 +27,7 @@ cache = Cache(app)
 
 @app.route("/", methods=["POST"])
 def index():
-    # Retrieve the JSON data from the client side
     args_dict = request.get_json()
-
-    # For Testing (Will be replaced with Requests)
-    # with open(join("../samplejson", "recipe.json"), "r") as read_file:
-    #     data = json.load(read_file)
 
     # Use cached data if the same query is made recently
     try:
@@ -117,8 +112,6 @@ def favourites():
 @app.route("/display-votes", methods=["POST"])
 def display_votes():
     try:
-        # request_data = request.get_json()
-        # dish_uri_list = request_data.get('dish_uri_list')
         dish_uri_list = request.get_json()
         print(dish_uri_list["dish_uri_list"])
         
