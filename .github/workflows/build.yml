@@ -22,7 +22,7 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
+  
   unit-test:
     needs: python-formatting
     runs-on: ubuntu-latest
@@ -33,6 +33,7 @@ jobs:
         run: pip install -r requirements.txt
       - name: Install Pytest GitHub Report
         run: pip install pytest-github-report
+<<<<<<< HEAD
       - name: Generate Pytest Report
         env:
           pytest_github_report: true
@@ -74,3 +75,14 @@ jobs:
             EDAMAM_APP_ID=${{ secrets.EDAMAM_APP_ID }}
             EDAMAM_APP_KEY=${{ secrets.EDAMAM_APP_KEY }}
 
+=======
+      # - name: Generate Pytest Report
+      #   env:
+      #     pytest_github_report: true
+      #     pytest_verbosity: 2
+      #     FLASK_APP: api
+      #     FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+      #     SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      #     SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      #   run: pytest tests
+>>>>>>> 573d7328ec388702c53896adf8017340f6fe4244
