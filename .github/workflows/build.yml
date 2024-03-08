@@ -91,7 +91,7 @@ jobs:
           dns-name-label: sse-finder-service
           image: ghcr.io/${{ github.repository }}
           cpu: 1
-          memory: 1.5
+          memory: 1
           name: sse-finder-service-container
           ports: '5000'
           secure-environment-variables: |
