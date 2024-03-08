@@ -63,8 +63,6 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           flavor: |
             latest=true
-          tags: |
-            type=schedule,pattern={{date 'YYYYMMDD'}}
       - name: Build and push Docker images to GHCR
         uses: docker/build-push-action@v5.1.0
         with:
