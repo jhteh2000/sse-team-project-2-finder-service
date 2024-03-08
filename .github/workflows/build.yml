@@ -73,3 +73,24 @@ jobs:
             SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
             EDAMAM_APP_ID=${{ secrets.EDAMAM_APP_ID }}
             EDAMAM_APP_KEY=${{ secrets.EDAMAM_APP_KEY }}
+
+  deploy-to-azure:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Azure Container Instances
+        uses: Azure/aci-deploy@v1.1.3
+        with:
+          resource-group: sse-team-project-2
+          dns-name-label: sse-finder-service
+          image: ghcr.io/${{ github.repository }}
+          cpu: 1
+          memory: 1.5
+          name: sse-finder-service-container
+          ports: '5000'
+          secure-environment-variables: |
+            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}
+            EDAMAM_APP_ID=${{ secrets.EDAMAM_APP_ID }}
+            EDAMAM_APP_KEY=${{ secrets.EDAMAM_APP_KEY }}
+          location: 'uk south'
