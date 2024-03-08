@@ -92,6 +92,7 @@ jobs:
           image: ghcr.io/${{ github.repository }}
           cpu: 1
           memory: 1
+          registry-login-server: ghcr.io
           registry-username: ${{ github.actor }}
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           name: sse-food-finder-service-container
